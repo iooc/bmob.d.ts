@@ -261,7 +261,37 @@ declare namespace Bmob {
          * @param roleName 角色名称
          * @param acl 访问控制对象
          */
-        constructor(roleName: string, acl: ACL)
+        constructor(roleName: string, acl: ACL);
+        /**
+         * 获取角色的name。同时可以使用role.get("name")
+         */
+        getName():string;
+        /**
+         * 设置角色的名称。这个值必须要在保存前设置，而且只能设置一次
+         * <p>
+         *   角色的名称只能包含数字，字母， _, -。
+         * </p>
+         *
+         * <p>等同于使用 role.set("name", name)</p>
+         * @param name 角色的名称
+         * @param options 函数反馈
+         */
+        setName(name:string, options?:{
+            success?: () => void,
+            error?: (error: Error) => void
+        }):Promise<void>;
+        /**
+         * 获取这个角色对应的用户Bmob.Users。这些用户已经被分配了权限（例如读写的权限）。
+         * 你能通过relation添加和移除这些用户
+         * <p>这等同于使用 role.relation("users")</p>
+         */
+        getUsers():Array<User>;
+        /**
+         * 获取这个角色对应的角色Bmob.Roles。这些用户已经被分配了权限（例如读写的权限）。
+         * 你能通过relation添加和移除这些用户
+         * <p>这等同于使用 role.relation("roles")</p>
+         */
+        getRoles():Array<Role>;
     }
     /**
      * 访问控制列表管理对象
@@ -307,8 +337,27 @@ declare namespace Bmob {
         /**
          * 用户是否有写的权限。
          * 就算是返回false，用户或许可以访问对象，如果getPublicReadAccess返回ture，或者用户的角色有写的权限。
+         * @param userId 用户id或对象id，或Bmob.Role
          */
-        getWriteAccess(): boolean;
+        getWriteAccess(userId:string|Role): boolean;
+        /**
+         * 设置是否允许用户有写的权限
+         * @param userId 用户id或对象id，或Bmob.Role
+         * @param allowed 用户是否有写的权限
+         */
+        setWriteAccess(userId:string|Role, allowed: boolean):void;
+        /**
+         * 用户是否有读的权限。
+         * 就算是返回false，用户或许可以访问对象，如果getPublicReadAccess返回ture，或者用户的角色有写的权限。
+         * @param userId 用户id或对象id, 或者Bmob.Role.
+         */
+        getReadAccess(userId:string|Role): boolean;
+        /**
+         * 设置是否允许用户读取这个对象
+         * @param userId 用户id或对象id，或Bmob.Role
+         * @param allowed 用户是否有读的权限
+         */
+        setReadAccess(userId:string|Role, allowed: boolean):void;
     }
     /**
      * 初始化 Bmob 代码
