@@ -5,6 +5,7 @@ declare namespace Bmob {
     class Error {
         code: string;
         message: string;
+        description: string;
     }
     /**
      * Bmob 文档对象模型
@@ -29,7 +30,7 @@ declare namespace Bmob {
         /**
          * 使用指定的集合名声明一个集合结构
          */
-        extend(collection: string): Object;
+        static extend(collection: string): FunctionConstructor;
         /**
          * 设置一列数据，重复调用可设置多列
          */
@@ -66,7 +67,7 @@ declare namespace Bmob {
         /**
          * 查询所有数据
          */
-        find(options: {
+        find(options?: {
             success?: (results: Array<Object>) => void,
             error?: (error: Error) => void
         }): Promise<Array<Object>>;
@@ -217,7 +218,16 @@ declare namespace Bmob {
          * @param password 密码
          * @param options 登录尝试反馈信息
          */
-        static logIn(username: string, password: string, options: {
+        static logIn(username: string, password: string, options?: {
+            success: (user: User) => void,
+            error?: (user: User, error: Error) => void
+        }): Promise<User>;
+        
+        /**
+         * 使用当前用户对象进行登录尝试
+         * @param options 登录尝试反馈信息
+         */
+        logIn(options?: {
             success: (user: User) => void,
             error?: (user: User, error: Error) => void
         }): Promise<User>;
@@ -230,7 +240,7 @@ declare namespace Bmob {
          */
         static logOut(): void;
         /**
-         * 验证是否已登录
+         * 检查这个用户是否当前用户并且已经登录。
          */
         authenticated(): boolean;
         /**
